@@ -33,9 +33,9 @@ sealed class TripSummaryIntent : UiIntent {
     object ExportToCSV : TripSummaryIntent()
     object ShareTrip : TripSummaryIntent()
     object GenerateReport : TripSummaryIntent()
-    data class NavigateToGallery : TripSummaryIntent()
-    data class NavigateToMap : TripSummaryIntent()
-    data class NavigateToExpenses : TripSummaryIntent()
+    object NavigateToGallery : TripSummaryIntent()
+    object NavigateToMap : TripSummaryIntent()
+    object NavigateToExpenses : TripSummaryIntent()
 }
 
 sealed class TripSummaryEffect : UiEffect {

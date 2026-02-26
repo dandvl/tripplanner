@@ -2,6 +2,8 @@ package tech.bluebits.tripplannertracker.presentation.summary
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import tech.bluebits.tripplannertracker.data.model.ExpenseCategory
 import tech.bluebits.tripplannertracker.data.model.ItineraryCategory
@@ -10,6 +12,7 @@ import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlin.math.pow
 
 @HiltViewModel
 class TripSummaryViewModel @Inject constructor(
@@ -90,10 +93,10 @@ class TripSummaryViewModel @Inject constructor(
         
         val visitedLocations = visitedLocationRepository.getVisitedLocationCount(trip.id)
         val totalDistance = calculateTotalDistance(trip.id)
-        
-        val itineraryItems = itineraryRepository.getItineraryItemsByTripId(trip.id)
+
+        val itineraryItems = itineraryRepository.getItineraryItemsByTripId(trip.id).first()
         val completedItems = itineraryItems.filter { it.isCompleted }.size
-        
+
         val journalEntries = journalEntryRepository.getJournalEntryCount(trip.id)
         val photosCount = countPhotos(trip.id)
         
@@ -154,7 +157,7 @@ class TripSummaryViewModel @Inject constructor(
 
     private suspend fun countPhotos(tripId: String): Int {
         // Count photos from journal entries and other sources
-        val journalEntries = journalEntryRepository.getJournalEntriesByTripId(tripId)
+        val journalEntries = journalEntryRepository.getJournalEntriesByTripId(tripId).first()
         return journalEntries.sumOf { it.photoUrls.size }
     }
 

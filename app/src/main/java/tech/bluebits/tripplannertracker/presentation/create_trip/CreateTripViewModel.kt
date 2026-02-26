@@ -7,6 +7,7 @@ import tech.bluebits.tripplannertracker.data.model.Trip
 import tech.bluebits.tripplannertracker.data.model.TripStatus
 import tech.bluebits.tripplannertracker.data.repository.TripRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject

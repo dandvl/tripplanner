@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -64,6 +65,19 @@ class LocationManager(private val context: Context) {
             }
             
             try {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    close(SecurityException("Location permissions not granted"))
+                    return@callbackFlow
+                }
+                
                 fusedLocationClient.requestLocationUpdates(
                     locationRequest,
                     locationCallback,
@@ -80,11 +94,28 @@ class LocationManager(private val context: Context) {
     }
     
     suspend fun isLocationEnabled(): Boolean {
+        if (!hasLocationPermissions()) {
+            throw SecurityException("Location permissions not granted")
+        }
+        
         return suspendCancellableCoroutine { continuation ->
             val locationRequest = LocationRequest.Builder(
                 Priority.PRIORITY_LOW_POWER,
                 1000L
             ).build()
+            
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                continuation.resumeWithException(SecurityException("Location permissions not granted"))
+                return@suspendCancellableCoroutine
+            }
             
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,

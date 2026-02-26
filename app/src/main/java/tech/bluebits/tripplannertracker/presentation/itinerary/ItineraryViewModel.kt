@@ -8,6 +8,7 @@ import tech.bluebits.tripplannertracker.data.model.ItineraryCategory
 import tech.bluebits.tripplannertracker.data.model.ItineraryItem
 import tech.bluebits.tripplannertracker.data.repository.ItineraryRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject

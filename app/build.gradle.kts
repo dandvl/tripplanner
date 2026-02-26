@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     
     // Hilt
     implementation(libs.hilt.android)
@@ -74,6 +75,7 @@ dependencies {
     // Maps & Location
     implementation(libs.maps.compose)
     implementation(libs.maps.ktx)
+    implementation(libs.maps.utils)
     implementation(libs.location)
     
     // Permissions

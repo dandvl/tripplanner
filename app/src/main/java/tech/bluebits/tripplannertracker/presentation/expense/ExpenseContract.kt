@@ -33,7 +33,7 @@ sealed class ExpenseIntent : UiIntent {
     data class UpdateCurrency(val currency: String) : ExpenseIntent()
     data class FilterByCategory(val category: ExpenseCategory?) : ExpenseIntent()
     data class FilterByDate(val date: LocalDate?) : ExpenseIntent()
-    data class NavigateToAddExpense : ExpenseIntent()
+    object NavigateToAddExpense : ExpenseIntent()
     data class NavigateToEditExpense(val expenseId: String) : ExpenseIntent()
     object NavigateToBudgetSettings : ExpenseIntent()
     object ExportExpenses : ExpenseIntent()

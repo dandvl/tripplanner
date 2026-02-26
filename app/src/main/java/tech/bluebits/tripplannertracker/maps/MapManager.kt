@@ -59,9 +59,9 @@ class MapManager @Inject constructor(
             if (item.latitude != null && item.longitude != null) {
                 MapMarker(
                     id = item.id,
-                    position = LatLng(item.latitude, item.longitude),
-                    title = item.title,
-                    snippet = item.description,
+                    latLng = LatLng(item.latitude, item.longitude),
+                    markerTitle = item.title,
+                    markerSnippet = item.description,
                     type = MarkerType.ITINERARY,
                     data = item
                 )
@@ -72,7 +72,7 @@ class MapManager @Inject constructor(
         clusterManager?.cluster()
         
         if (markers.isNotEmpty()) {
-            zoomToMarkers(markers.map { it.position })
+            zoomToMarkers(markers.map { it.latLng })
         }
     }
     
@@ -80,9 +80,9 @@ class MapManager @Inject constructor(
         val markers = locations.map { location ->
             MapMarker(
                 id = location.id,
-                position = LatLng(location.latitude, location.longitude),
-                title = location.name,
-                snippet = "Visited at ${location.visitedAt}",
+                latLng = LatLng(location.latitude, location.longitude),
+                markerTitle = location.name,
+                markerSnippet = "Visited at ${location.visitedAt}",
                 type = MarkerType.VISITED_LOCATION,
                 data = location
             )
@@ -92,7 +92,7 @@ class MapManager @Inject constructor(
         clusterManager?.cluster()
         
         if (markers.isNotEmpty()) {
-            zoomToMarkers(markers.map { it.position })
+            zoomToMarkers(markers.map { it.latLng })
         }
     }
     
@@ -193,14 +193,17 @@ enum class MarkerType {
 
 data class MapMarker(
     val id: String,
-    val position: LatLng,
-    val title: String,
-    val snippet: String,
+    val latLng: LatLng,
+    val markerTitle: String?,
+    val markerSnippet: String?,
     val type: MarkerType,
     val data: Any? = null
 ) : com.google.maps.android.clustering.ClusterItem {
     
-    override fun getPosition(): LatLng = position
-    override fun getTitle(): String? = title
-    override fun getSnippet(): String? = snippet
+    override fun getPosition(): LatLng = latLng
+    override fun getTitle(): String? = markerTitle
+    override fun getSnippet(): String? = markerSnippet
+    override fun getZIndex(): Float? {
+        TODO("Not yet implemented")
+    }
 }

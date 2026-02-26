@@ -30,8 +30,8 @@ sealed class JournalIntent : UiIntent {
     object StartAddingEntry : JournalIntent()
     object StartEditingEntry : JournalIntent()
     object CancelEditing : JournalIntent()
-    data class CapturePhoto : JournalIntent()
-    data class GetWeatherSnapshot : JournalIntent()
+    object CapturePhoto : JournalIntent()
+    object GetWeatherSnapshot : JournalIntent()
     object NavigateToPhotoGallery : JournalIntent()
     object ExportJournal : JournalIntent()
 }

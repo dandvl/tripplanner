@@ -2,6 +2,8 @@ package tech.bluebits.tripplannertracker.presentation.trip_list
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import tech.bluebits.tripplannertracker.data.model.TripStatus
 import tech.bluebits.tripplannertracker.data.repository.TripRepository
@@ -34,7 +36,7 @@ class TripListViewModel @Inject constructor(
             try {
                 combine(
                     tripRepository.getUpcomingTrips(),
-                    tripRepository.getActiveTrip(),
+                    flow { emit(tripRepository.getActiveTrip()) },
                     tripRepository.getPastTrips()
                 ) { upcoming, active, past ->
                     Triple(upcoming, active, past)

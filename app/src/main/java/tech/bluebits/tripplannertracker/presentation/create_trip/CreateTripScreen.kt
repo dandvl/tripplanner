@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -258,4 +259,14 @@ fun CreateTripScreen(
         viewModel.sendIntent(CreateTripIntent.UpdateEndDate(state.endDate.plusDays(1)))
         showEndDatePicker = false
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CreateTripScreenPreview() {
+    CreateTripScreen(
+        onNavigateBack = {},
+        onShowDatePicker = {},
+        onShowImagePicker = {}
+    )
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -251,4 +252,43 @@ fun EmptyState() {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TripListScreenPreview() {
+    TripListScreen(
+        onNavigateToTripDetail = {},
+        onNavigateToCreateTrip = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EmptyStatePreview() {
+    EmptyState()
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TripCardPreview() {
+    val sampleTrip = tech.bluebits.tripplannertracker.data.model.Trip(
+        id = "1",
+        name = "Summer Vacation",
+        destination = "Paris, France",
+        startDate = java.time.LocalDate.now(),
+        endDate = java.time.LocalDate.now().plusDays(7),
+        status = TripStatus.UPCOMING,
+        totalBudget = 2000.0,
+        currency = "USD",
+        coverImageUrl = null,
+        notes = "Amazing trip planned!",
+        createdAt = java.time.LocalDateTime.now(),
+        updatedAt = java.time.LocalDateTime.now()
+    )
+    
+    TripCard(
+        trip = sampleTrip,
+        onClick = {}
+    )
 }

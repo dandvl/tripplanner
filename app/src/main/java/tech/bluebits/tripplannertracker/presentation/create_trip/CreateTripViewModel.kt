@@ -100,7 +100,7 @@ class CreateTripViewModel @Inject constructor(
                     totalBudget = budget,
                     currency = currentState.currency,
                     coverImageUrl = currentState.coverImageUrl,
-                    status = if (currentState.startDate.isAfter(java.time.LocalDate.now())) {
+                    status = if (currentState.startDate.isAfter(LocalDate.now())) {
                         TripStatus.UPCOMING
                     } else {
                         TripStatus.ACTIVE
@@ -111,7 +111,7 @@ class CreateTripViewModel @Inject constructor(
                 
                 tripRepository.insertTrip(trip)
                 updateState { copy(isLoading = false, isSaved = true) }
-                sendEffect(CreateTripEffect.NavigateBack)
+//                sendEffect(CreateTripEffect.NavigateBack)
                 sendEffect(CreateTripEffect.ShowSaveSuccess)
                 
             } catch (e: Exception) {

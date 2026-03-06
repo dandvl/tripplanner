@@ -31,6 +31,9 @@ fun CreateTripScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val startDatePickerState = rememberDatePickerState()
+    val endDatePickerState = rememberDatePickerState()
     
     // Handle effects
     LaunchedEffect(Unit) {
@@ -38,16 +41,25 @@ fun CreateTripScreen(
             when (effect) {
                 is CreateTripEffect.NavigateBack -> onNavigateBack()
                 is CreateTripEffect.ShowError -> {
-                    // Show error message (could use a snackbar)
+                    snackbarHostState.showSnackbar(
+                        message = effect.message,
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Long
+                    )
                 }
                 is CreateTripEffect.ShowSaveSuccess -> {
-                    // Show success message (could use a snackbar)
+                    snackbarHostState.showSnackbar(
+                        message = "Trip saved",
+                        withDismissAction = false,
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
     }
     
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Create Trip") },
@@ -247,17 +259,65 @@ fun CreateTripScreen(
     
     // Date pickers (simplified - in real app would show actual date picker dialogs)
     if (showStartDatePicker) {
-        // TODO: Show date picker dialog
-        // For now, just increment by one day as example
-        viewModel.sendIntent(CreateTripIntent.UpdateStartDate(state.startDate.plusDays(1)))
-        showStartDatePicker = false
+        DatePickerDialog(
+            onDismissRequest = { showStartDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val selectedMillis = startDatePickerState.selectedDateMillis
+                        if (selectedMillis != null) {
+                            val selectedDate = java.time.Instant
+                                .ofEpochMilli(selectedMillis)
+                                .atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                            viewModel.sendIntent(CreateTripIntent.UpdateStartDate(selectedDate))
+                            onShowDatePicker(selectedDate)
+                        }
+                        showStartDatePicker = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showStartDatePicker = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = startDatePickerState)
+        }
     }
     
     if (showEndDatePicker) {
-        // TODO: Show date picker dialog
-        // For now, just increment by one day as example
-        viewModel.sendIntent(CreateTripIntent.UpdateEndDate(state.endDate.plusDays(1)))
-        showEndDatePicker = false
+        DatePickerDialog(
+            onDismissRequest = { showEndDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val selectedMillis = endDatePickerState.selectedDateMillis
+                        if (selectedMillis != null) {
+                            val selectedDate = java.time.Instant
+                                .ofEpochMilli(selectedMillis)
+                                .atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                            viewModel.sendIntent(CreateTripIntent.UpdateEndDate(selectedDate))
+                            onShowDatePicker(selectedDate)
+                        }
+                        showEndDatePicker = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEndDatePicker = false }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = endDatePickerState)
+        }
     }
 }
 

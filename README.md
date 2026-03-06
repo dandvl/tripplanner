@@ -6,8 +6,6 @@ Built with Android using Jetpack Compose, MVI architecture, Jetpack Compose, Roo
 
 ---
 
-## Legend
-
 **Loading...** ⏳
 
 ---

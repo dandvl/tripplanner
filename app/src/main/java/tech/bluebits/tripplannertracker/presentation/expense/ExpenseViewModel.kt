@@ -9,6 +9,7 @@ import tech.bluebits.tripplannertracker.data.model.ExpenseCategory
 import tech.bluebits.tripplannertracker.data.repository.ExpenseRepository
 import tech.bluebits.tripplannertracker.data.repository.TripRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -52,6 +53,7 @@ class ExpenseViewModel @Inject constructor(
                 // Load expenses
                 expenseRepository.getExpensesByTripId(state.value.tripId)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to load expenses")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -79,6 +81,7 @@ class ExpenseViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load expenses")
                 updateState {
                     copy(
                         isLoading = false,
@@ -99,6 +102,7 @@ class ExpenseViewModel @Inject constructor(
             try {
                 expenseRepository.getExpensesByCategory(state.value.tripId, category)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to load expenses for category")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -116,6 +120,7 @@ class ExpenseViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load expenses for category")
                 updateState {
                     copy(
                         isLoading = false,

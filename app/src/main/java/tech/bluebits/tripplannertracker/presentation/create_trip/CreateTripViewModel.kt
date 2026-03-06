@@ -7,6 +7,7 @@ import tech.bluebits.tripplannertracker.data.model.Trip
 import tech.bluebits.tripplannertracker.data.model.TripStatus
 import tech.bluebits.tripplannertracker.data.repository.TripRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -114,6 +115,7 @@ class CreateTripViewModel @Inject constructor(
                 sendEffect(CreateTripEffect.ShowSaveSuccess)
                 
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to save trip")
                 updateState {
                     copy(
                         isLoading = false,

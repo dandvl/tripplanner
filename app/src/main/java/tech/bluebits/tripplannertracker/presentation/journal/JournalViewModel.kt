@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import tech.bluebits.tripplannertracker.data.model.JournalEntry
 import tech.bluebits.tripplannertracker.data.repository.JournalEntryRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -45,6 +46,7 @@ class JournalViewModel @Inject constructor(
             try {
                 journalEntryRepository.getJournalEntriesByTripId(state.value.tripId)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to load journal entries")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -62,6 +64,7 @@ class JournalViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load journal entries")
                 updateState {
                     copy(
                         isLoading = false,
@@ -88,6 +91,7 @@ class JournalViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load journal entry")
                 updateState {
                     copy(
                         isLoading = false,
@@ -112,6 +116,7 @@ class JournalViewModel @Inject constructor(
                 loadJournalEntries() // Refresh the list
                 updateState { copy(isAddingEntry = false) }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to add journal entry")
                 sendEffect(JournalEffect.ShowError(e.message ?: "Failed to add journal entry"))
             }
         }

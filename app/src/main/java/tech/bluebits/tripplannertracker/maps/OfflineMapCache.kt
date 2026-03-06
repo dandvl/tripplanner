@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import tech.bluebits.tripplannertracker.data.database.entity.TripEntity
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,6 +39,7 @@ class OfflineMapCache @Inject constructor(
             
             _cacheState.value = CacheState.Cached
         } catch (e: Exception) {
+            Timber.tag("TRP").e(e, "Failed to cache map data")
             _cacheState.value = CacheState.Error(e.message ?: "Failed to cache map data")
         }
     }
@@ -83,6 +85,7 @@ class OfflineMapCache @Inject constructor(
                 )
             }
         } catch (e: Exception) {
+            Timber.tag("TRP").e(e, "Failed to load cached map data")
             _cacheState.value = CacheState.Error(e.message ?: "Failed to load cached map data")
         }
         
@@ -106,6 +109,7 @@ class OfflineMapCache @Inject constructor(
             
             _cacheState.value = CacheState.Idle
         } catch (e: Exception) {
+            Timber.tag("TRP").e(e, "Failed to clear cache")
             _cacheState.value = CacheState.Error(e.message ?: "Failed to clear cache")
         }
     }

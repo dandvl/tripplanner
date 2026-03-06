@@ -9,6 +9,7 @@ import tech.bluebits.tripplannertracker.data.model.ExpenseCategory
 import tech.bluebits.tripplannertracker.data.model.ItineraryCategory
 import tech.bluebits.tripplannertracker.data.repository.*
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
@@ -75,6 +76,7 @@ class TripSummaryViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load trip summary")
                 updateState {
                     copy(
                         isLoading = false,

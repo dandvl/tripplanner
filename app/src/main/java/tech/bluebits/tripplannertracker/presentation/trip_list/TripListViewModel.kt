@@ -4,10 +4,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import tech.bluebits.tripplannertracker.data.model.TripStatus
 import tech.bluebits.tripplannertracker.data.repository.TripRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +53,7 @@ class TripListViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load trips")
                 updateState {
                     copy(
                         isLoading = false,
@@ -73,6 +76,7 @@ class TripListViewModel @Inject constructor(
                 // Refresh the list after deletion
                 loadTrips()
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to delete trip")
                 sendEffect(TripListEffect.ShowError(e.message ?: "Failed to delete trip"))
             }
         }

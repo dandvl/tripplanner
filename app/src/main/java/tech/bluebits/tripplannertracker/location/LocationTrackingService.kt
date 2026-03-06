@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import tech.bluebits.tripplannertracker.R
 import tech.bluebits.tripplannertracker.data.repository.VisitedLocationRepository
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -133,6 +134,7 @@ class LocationTrackingService : Service() {
             
             startForeground(NOTIFICATION_ID, createNotification())
         } catch (e: Exception) {
+            Timber.tag("TRP").e(e, "Failed to start location tracking")
             isTracking = false
             stopSelf()
         }
@@ -169,7 +171,7 @@ class LocationTrackingService : Service() {
                     
                     visitedLocationRepository.insertVisitedLocation(visitedLocation)
                 } catch (e: Exception) {
-                    // Handle error
+                    Timber.tag("TRP").e(e, "Failed to save visited location")
                 }
             }
         }

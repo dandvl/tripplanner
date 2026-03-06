@@ -8,6 +8,7 @@ import tech.bluebits.tripplannertracker.data.model.ItineraryCategory
 import tech.bluebits.tripplannertracker.data.model.ItineraryItem
 import tech.bluebits.tripplannertracker.data.repository.ItineraryRepository
 import tech.bluebits.tripplannertracker.presentation.base.BaseViewModel
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -44,6 +45,7 @@ class ItineraryViewModel @Inject constructor(
             try {
                 itineraryRepository.getItineraryItemsByTripId(state.value.tripId)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to load itinerary items")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -61,6 +63,7 @@ class ItineraryViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load itinerary items")
                 updateState {
                     copy(
                         isLoading = false,
@@ -81,6 +84,7 @@ class ItineraryViewModel @Inject constructor(
             try {
                 itineraryRepository.getItineraryItemsByTripIdAndDate(state.value.tripId, date)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to load itinerary items for date")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -98,6 +102,7 @@ class ItineraryViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to load itinerary items for date")
                 updateState {
                     copy(
                         isLoading = false,
@@ -128,6 +133,7 @@ class ItineraryViewModel @Inject constructor(
             try {
                 itineraryRepository.getItineraryItemsByCategory(state.value.tripId, category)
                     .catch { e ->
+                        Timber.tag("TRP").e(e, "Failed to filter items by category")
                         updateState {
                             copy(
                                 isLoading = false,
@@ -145,6 +151,7 @@ class ItineraryViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
+                Timber.tag("TRP").e(e, "Failed to filter items by category")
                 updateState {
                     copy(
                         isLoading = false,

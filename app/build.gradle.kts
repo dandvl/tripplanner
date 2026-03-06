@@ -89,6 +89,9 @@ dependencies {
     
     // WorkManager
     implementation(libs.work.runtime.ktx)
+
+    // Logging
+    implementation(libs.timber)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

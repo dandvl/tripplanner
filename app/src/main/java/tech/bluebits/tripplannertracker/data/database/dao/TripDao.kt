@@ -4,7 +4,6 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import tech.bluebits.tripplannertracker.data.database.entity.TripEntity
 import tech.bluebits.tripplannertracker.data.model.TripStatus
-import java.time.LocalDate
 
 @Dao
 interface TripDao {
@@ -18,13 +17,13 @@ interface TripDao {
     @Query("SELECT * FROM trips WHERE id = :id")
     suspend fun getTripById(id: String): TripEntity?
     
-    @Query("SELECT * FROM trips WHERE date('startDate') <= date('now') AND date('endDate') >= date('now') LIMIT 1")
+    @Query("SELECT * FROM trips WHERE date(startDate) <= date('now') AND date(endDate) >= date('now') LIMIT 1")
     suspend fun getActiveTrip(): TripEntity?
     
-    @Query("SELECT * FROM trips WHERE date('startDate') > date('now') ORDER BY startDate ASC LIMIT :limit")
+    @Query("SELECT * FROM trips WHERE date(startDate) > date('now') ORDER BY startDate ASC LIMIT :limit")
     fun getUpcomingTrips(limit: Int = 5): Flow<List<TripEntity>>
     
-    @Query("SELECT * FROM trips WHERE date('endDate') < date('now') ORDER BY startDate DESC LIMIT :limit")
+    @Query("SELECT * FROM trips WHERE date(endDate) < date('now') ORDER BY startDate DESC LIMIT :limit")
     fun getPastTrips(limit: Int = 5): Flow<List<TripEntity>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)

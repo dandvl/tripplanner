@@ -9,6 +9,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,8 @@ fun TripListScreen(
     onNavigateToCreateTrip: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var pendingDeleteTripId by remember { mutableStateOf<String?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
         viewModel.sendIntent(TripListIntent.LoadTrips)
@@ -85,6 +89,10 @@ fun TripListScreen(
                             trips = listOf(activeTrip),
                             onTripClick = { tripId ->
                                 viewModel.sendIntent(TripListIntent.NavigateToTripDetail(tripId))
+                            },
+                            onTripLongClick = { tripId ->
+                                pendingDeleteTripId = tripId
+                                showDeleteDialog = true
                             }
                         )
                     }
@@ -98,6 +106,10 @@ fun TripListScreen(
                             trips = state.upcomingTrips,
                             onTripClick = { tripId ->
                                 viewModel.sendIntent(TripListIntent.NavigateToTripDetail(tripId))
+                            },
+                            onTripLongClick = { tripId ->
+                                pendingDeleteTripId = tripId
+                                showDeleteDialog = true
                             }
                         )
                     }
@@ -111,6 +123,10 @@ fun TripListScreen(
                             trips = state.pastTrips,
                             onTripClick = { tripId ->
                                 viewModel.sendIntent(TripListIntent.NavigateToTripDetail(tripId))
+                            },
+                            onTripLongClick = { tripId ->
+                                pendingDeleteTripId = tripId
+                                showDeleteDialog = true
                             }
                         )
                     }
@@ -135,10 +151,45 @@ fun TripListScreen(
                     // Show error message (could use a snackbar)
                 }
                 is TripListEffect.ShowDeleteConfirmation -> {
-                    // Show delete confirmation dialog
+                    showDeleteDialog = true
                 }
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+                pendingDeleteTripId = null
+            },
+            title = { Text(text = "Delete trip?") },
+            text = { Text(text = "This action can't be undone.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val tripId = pendingDeleteTripId
+                        if (tripId != null) {
+                            viewModel.sendIntent(TripListIntent.DeleteTrip(tripId))
+                        }
+                        showDeleteDialog = false
+                        pendingDeleteTripId = null
+                    }
+                ) {
+                    Text(text = "Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        pendingDeleteTripId = null
+                    }
+                ) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -146,7 +197,8 @@ fun TripListScreen(
 fun TripSection(
     title: String,
     trips: List<tech.bluebits.tripplannertracker.data.model.Trip>,
-    onTripClick: (String) -> Unit
+    onTripClick: (String) -> Unit,
+    onTripLongClick: (String) -> Unit = {}
 ) {
     Column {
         Text(
@@ -159,7 +211,8 @@ fun TripSection(
         trips.forEach { trip ->
             TripCard(
                 trip = trip,
-                onClick = { onTripClick(trip.id) }
+                onClick = { onTripClick(trip.id) },
+                onLongClick = { onTripLongClick(trip.id) }
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -169,7 +222,8 @@ fun TripSection(
 @Composable
 fun TripCard(
     trip: tech.bluebits.tripplannertracker.data.model.Trip,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
     val dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
     
@@ -181,6 +235,11 @@ fun TripCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = { onLongClick() }
+                    )
+                }
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

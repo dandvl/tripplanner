@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import tech.bluebits.tripplannertracker.presentation.trip_list.TripListScreen
 import tech.bluebits.tripplannertracker.presentation.create_trip.CreateTripScreen
+import tech.bluebits.tripplannertracker.presentation.trip_detail.TripDetailScreen
 
 @Composable
 fun TripPlannerNavigation(
@@ -48,11 +49,12 @@ fun TripPlannerNavigation(
             arguments = listOf(navArgument("tripId") { type = NavType.StringType })
         ) { backStackEntry ->
             val tripId = backStackEntry.arguments?.getString("tripId") ?: return@composable
-            // TripDetailScreen will be implemented here
-            // TripDetailScreen(
-            //     tripId = tripId,
-            //     navController = navController
-            // )
+            TripDetailScreen(
+                tripId = tripId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
         
         composable(
